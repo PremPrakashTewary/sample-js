@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>
+    Gantt Chart Project Schedule Example - HTML5 jQuery Chart Plugin by jqChart
+</title>
+        <link rel="stylesheet" type="text/css" href="jquery.jqChart.css" />
+        <link rel="stylesheet" type="text/css" href="styles.css" />
+        <script src="jquery-1.11.1.min.js" type="text/javascript"></script>
+        <script src="jquery.jqChart.min.js" type="text/javascript"></script>
+        
+    <script lang="javascript" type="text/javascript">
+        function createData(rows){
+            var data_arr = []
+            var start_date = new Date();
+            var mid_date = new Date();
+            var end_date = new Date();
+            for(var i = 0; i < rows; i++){
+                start_date.setDate(start_date.getDate() + i - 4);
+                mid_date.setDate(mid_date.getDate() + i - 3);
+                end_date.setDate(end_date.getDate() + i - 2);
+                var task = "task"+i;
+                console.log("start date day now" + start_date.getDate());
+                console.log("start date " + start_date.toJSON());
+                console.log("mid date " + mid_date.toJSON());
+                console.log("end date " + end_date.toJSON());
+                var data = {
+                    taskName: task,
+                    completed: "56%",
+                    pending: "40%",
+                    startDate: new Date(start_date.getFullYear(), start_date.getMonth(), start_date.getDate()),
+                    midDate: new Date(mid_date.getFullYear(), mid_date.getMonth(), mid_date.getDate()),
+                    endDate: new Date(end_date.getFullYear(), end_date.getMonth(), end_date.getDate())
+                };
+                data_arr.push(data);
+            }
+            console.log('data_arr is ' + JSON.stringify(data_arr));
+            return data_arr;
+        }
+        function show_chart(txtId){
+            var value = document.getElementById(txtId).value;
+            alert('chart_demo ' + value);
+            var datas = createData(value);
+            console.log("data is " + datas);
+            var data_map = new Map()
+            for(var i = 0; i < datas.length; i++){
+                var data = datas[i];
+                var completed_data = {
+                    taskName: data.taskName,
+                    percentage: data.completed,
+                    startDate: data.startDate,
+                    endDate: data.midDate
+                };
+                var completed = data_map.get('completed');
+                if (completed) {
+                    completed.push(completed_data)
+                } else {
+                    completed = [completed_data]
+                }
+                data_map.set('completed', completed);
+                var pending_data = {
+                    taskName: data.taskName,
+                    percentage: data.pending,
+                    startDate: data.midDate,
+                    endDate: data.endDate
+                };
+                var pending = data_map.get('pending');
+                if (pending) {
+                    pending.push(pending_data)
+                } else {
+                    pending = [pending_data]
+                }
+                data_map.set('pending', pending);
+            }
+            chart(data_map);
+        } 
+
+        function chart(datas) { 
+            alert('Chart');
+            var series = $('#jqChart').jqChart('option', 'series');
+            console.log('series is ' + JSON.stringify(series));
+            series.splice(0, series.length);
+            console.log('now series is ' + JSON.stringify(series));
+            //series = [];
+            console.log("datas " + JSON.stringify(datas));
+            datas.forEach((value, key) => {
+                var datas_dt = [];
+                for(var st = 0; st < value.length; st++){
+                    var dt = value[st];
+                    var datas = [];
+                    datas.push(dt.taskName);
+                    datas.push(dt.startDate);
+                    datas.push(dt.endDate);
+                    datas_dt.push(datas)
+                }
+                console.log("key is " + JSON.stringify(key));
+                console.log("value is " + JSON.stringify(value));
+                var series_data = {
+                    type: 'gantt',
+                    title: key,
+                    data: datas_dt
+                };
+                series.push(series_data);
+            });
+            console.log('new series is ' + JSON.stringify(series));
+            $('#jqChart').jqChart('update');
+        }
+        $(document).ready(function () {
+            $('#jqChart').jqChart({
+                title: { text: 'Project Schedule' },
+                animation: { duration: 1 },
+                shadows: {
+                    enabled: true
+                },
+                series: []
+            });
+        });
+    </script>
+
+</head>
+<body>
+    <div>
+        <input type="text" id="ipTxt" value="1" /> &nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="button" id="btnChart" value="Show Chart" onclick="show_chart('ipTxt')">
+    </div>
+    
+    <div>
+        <div id="jqChart" style="width: 500px; height: 300px;">
+        </div>
+    </div>
+</body>
+</html>
