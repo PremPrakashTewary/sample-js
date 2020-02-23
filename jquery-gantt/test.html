@@ -20,10 +20,7 @@
                 mid_date.setDate(mid_date.getDate() + i - 3);
                 end_date.setDate(end_date.getDate() + i - 2);
                 var task = "task"+i;
-                console.log("start date day now" + start_date.getDate());
-                console.log("start date " + start_date.toJSON());
-                console.log("mid date " + mid_date.toJSON());
-                console.log("end date " + end_date.toJSON());
+                
                 var data = {
                     taskName: task,
                     completed: "56%",
@@ -39,7 +36,7 @@
         }
         function show_chart(txtId){
             var value = document.getElementById(txtId).value;
-            alert('chart_demo ' + value);
+            
             var datas = createData(value);
             console.log("data is " + datas);
             var data_map = new Map()
@@ -76,7 +73,7 @@
         } 
 
         function chart(datas) { 
-            alert('Chart');
+            
             var series = $('#jqChart').jqChart('option', 'series');
             console.log('series is ' + JSON.stringify(series));
             series.splice(0, series.length);
