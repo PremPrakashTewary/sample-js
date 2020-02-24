@@ -16,15 +16,16 @@
             var mid_date = new Date();
             var end_date = new Date();
             for(var i = 0; i < rows; i++){
+                var completed_percent = Math.floor((Math.random() * 61) - 40);
+                var pending_percent = 100 - completed_percent;
                 start_date.setDate(start_date.getDate() + i - 4);
                 mid_date.setDate(mid_date.getDate() + i - 3);
                 end_date.setDate(end_date.getDate() + i - 2);
                 var task = "task"+i;
-                
                 var data = {
                     taskName: task,
-                    completed: "56%",
-                    pending: "40%",
+                    completed: completed_percent,
+                    pending: pending_percent,
                     startDate: new Date(start_date.getFullYear(), start_date.getMonth(), start_date.getDate()),
                     midDate: new Date(mid_date.getFullYear(), mid_date.getMonth(), mid_date.getDate()),
                     endDate: new Date(end_date.getFullYear(), end_date.getMonth(), end_date.getDate())
@@ -36,10 +37,9 @@
         }
         function show_chart(txtId){
             var value = document.getElementById(txtId).value;
-            
             var datas = createData(value);
             console.log("data is " + datas);
-            var data_map = new Map()
+            var data_map = new Map();
             for(var i = 0; i < datas.length; i++){
                 var data = datas[i];
                 var completed_data = {
@@ -73,12 +73,11 @@
         } 
 
         function chart(datas) { 
-            
+            initChart();
             var series = $('#jqChart').jqChart('option', 'series');
             console.log('series is ' + JSON.stringify(series));
             series.splice(0, series.length);
             console.log('now series is ' + JSON.stringify(series));
-            //series = [];
             console.log("datas " + JSON.stringify(datas));
             datas.forEach((value, key) => {
                 var datas_dt = [];
@@ -102,7 +101,7 @@
             console.log('new series is ' + JSON.stringify(series));
             $('#jqChart').jqChart('update');
         }
-        $(document).ready(function () {
+        function initChart(){
             $('#jqChart').jqChart({
                 title: { text: 'Project Schedule' },
                 animation: { duration: 1 },
@@ -111,7 +110,7 @@
                 },
                 series: []
             });
-        });
+        }
     </script>
 
 </head>
