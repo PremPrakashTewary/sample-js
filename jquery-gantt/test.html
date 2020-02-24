@@ -18,9 +18,9 @@
                 var end_date = new Date();
                 var completed_percent = Math.abs(Math.floor((Math.random() * 61) - 40));
                 var pending_percent = 100 - completed_percent;
-                start_date.setDate(start_date.getDate() - 4);
-                mid_date.setDate(mid_date.getDate() - 3);
-                end_date.setDate(end_date.getDate() - 2);
+                start_date.setDate(start_date.getDate() + (i - 4));
+                mid_date.setDate(mid_date.getDate() + (i - 3));
+                end_date.setDate(end_date.getDate() + (i - 2));
                 var task = "task"+i;
                 var data = {
                     taskName: task,
