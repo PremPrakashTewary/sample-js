@@ -12,33 +12,33 @@
     <script lang="javascript" type="text/javascript">
         function createData(rows){
             var data_arr = []
-            var start_date = new Date();
-            var mid_date = new Date();
-            var end_date = new Date();
             for(var i = 0; i < rows; i++){
-                var completed_percent = Math.floor((Math.random() * 61) - 40);
+                var start_date = new Date();
+                var mid_date = new Date();
+                var end_date = new Date();
+                var completed_percent = Math.abs(Math.floor((Math.random() * 61) - 40));
                 var pending_percent = 100 - completed_percent;
-                start_date.setDate(start_date.getDate() + i - 4);
-                mid_date.setDate(mid_date.getDate() + i - 3);
-                end_date.setDate(end_date.getDate() + i - 2);
+                start_date.setDate(start_date.getDate() - 4);
+                mid_date.setDate(mid_date.getDate() - 3);
+                end_date.setDate(end_date.getDate() - 2);
                 var task = "task"+i;
                 var data = {
                     taskName: task,
-                    completed: completed_percent,
-                    pending: pending_percent,
+                    completed: "completed "+completed_percent+"%",
+                    pending: "pending "+pending_percent+"%",
                     startDate: new Date(start_date.getFullYear(), start_date.getMonth(), start_date.getDate()),
                     midDate: new Date(mid_date.getFullYear(), mid_date.getMonth(), mid_date.getDate()),
                     endDate: new Date(end_date.getFullYear(), end_date.getMonth(), end_date.getDate())
                 };
                 data_arr.push(data);
             }
-            console.log('data_arr is ' + JSON.stringify(data_arr));
+            console.log('data_arr is ' );
+            console.log(data_arr)
             return data_arr;
         }
         function show_chart(txtId){
             var value = document.getElementById(txtId).value;
             var datas = createData(value);
-            console.log("data is " + datas);
             var data_map = new Map();
             for(var i = 0; i < datas.length; i++){
                 var data = datas[i];
@@ -48,26 +48,28 @@
                     startDate: data.startDate,
                     endDate: data.midDate
                 };
-                var completed = data_map.get('completed');
+                var completed_key = "completed";
+                var completed = data_map.get(completed_key);
                 if (completed) {
                     completed.push(completed_data)
                 } else {
                     completed = [completed_data]
                 }
-                data_map.set('completed', completed);
+                data_map.set(completed_key, completed);
                 var pending_data = {
                     taskName: data.taskName,
                     percentage: data.pending,
                     startDate: data.midDate,
                     endDate: data.endDate
                 };
-                var pending = data_map.get('pending');
+                var pending_key = "pending";
+                var pending = data_map.get(pending_key);
                 if (pending) {
                     pending.push(pending_data)
                 } else {
                     pending = [pending_data]
                 }
-                data_map.set('pending', pending);
+                data_map.set(pending_key, pending);
             }
             chart(data_map);
         } 
@@ -75,10 +77,9 @@
         function chart(datas) { 
             initChart();
             var series = $('#jqChart').jqChart('option', 'series');
-            console.log('series is ' + JSON.stringify(series));
             series.splice(0, series.length);
-            console.log('now series is ' + JSON.stringify(series));
-            console.log("datas " + JSON.stringify(datas));
+            console.log("datas are " );
+            console.log(datas)
             datas.forEach((value, key) => {
                 var datas_dt = [];
                 for(var st = 0; st < value.length; st++){
@@ -87,18 +88,25 @@
                     datas.push(dt.taskName);
                     datas.push(dt.startDate);
                     datas.push(dt.endDate);
+                    datas.push(dt.percentage);
                     datas_dt.push(datas)
                 }
-                console.log("key is " + JSON.stringify(key));
-                console.log("value is " + JSON.stringify(value));
+                console.log("key is " );
+                console.log(key)
+                console.log("value is " );
+                console.log(value)
                 var series_data = {
                     type: 'gantt',
-                    title: key,
-                    data: datas_dt
+                    data: datas_dt,
+                    labels: {
+                            fillStyle: 'white',
+                            font: '14px sans-serif'
+                        }
                 };
                 series.push(series_data);
             });
-            console.log('new series is ' + JSON.stringify(series));
+            console.log('new series is ');
+            console.log(series);
             $('#jqChart').jqChart('update');
         }
         function initChart(){
@@ -121,7 +129,7 @@
     </div>
     
     <div>
-        <div id="jqChart" style="width: 500px; height: 300px;">
+        <div id="jqChart" style="width: 800px; height: 500px;">
         </div>
     </div>
 </body>
